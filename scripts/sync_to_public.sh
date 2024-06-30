@@ -24,7 +24,7 @@ rsync -av --delete \
 cp "$PRIVATE_REPO/config/public/README.md" "$PUBLIC_REPO/README.md"
 cp "$PRIVATE_REPO/config/public/.gitignore" "$PUBLIC_REPO/.gitignore"
 cp "$PRIVATE_REPO/config/public/LICENSE" "$PUBLIC_REPO/LICENSE"
-cp "$PRIVATE_REPO/config/public/CONTRIBUTING" "$PUBLIC_REPO/CONTRIBUTING"
+cp "$PRIVATE_REPO/config/public/CONTRIBUTING.md" "$PUBLIC_REPO/CONTRIBUTING.md"
 
 # Change to the public repo directory
 cd "$PUBLIC_REPO" || exit 1
