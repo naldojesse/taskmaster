@@ -3,7 +3,7 @@
 # Configuration
 PRIVATE_REPO="."
 PUBLIC_REPO="../taskmaster-public"
-PUBLIC_REMOTE="public"  # Changed back to "public" to match your remote setup
+PUBLIC_REMOTE="public"
 
 # Ensure the public repo directory exists
 mkdir -p "$PUBLIC_REPO"
@@ -32,11 +32,11 @@ cd "$PUBLIC_REPO" || exit 1
 # Initialize git if not already initialized
 if [ ! -d .git ]; then
     git init
-    git remote add public https://github.com/naldojesse/taskmaster.git
-else
-    # Ensure the remote is set correctly
-    git remote set-url public https://github.com/naldojesse/taskmaster.git
 fi
+
+# Set up the public remote
+git remote remove public 2>/dev/null || true
+git remote add public https://github.com/naldojesse/taskmaster.git
 
 # Add all changes
 git add .
