@@ -12,14 +12,16 @@ mkdir -p "$PUBLIC_REPO"
 rsync -av --delete \
     --exclude='.git/' \
     --exclude='docs/' \
-    --include='docs/public/' \
-    --include='docs/public/**' \
     --exclude='*.env' \
     --exclude='node_modules/' \
     --exclude='build/' \
     --exclude='*.log' \
     --exclude='*.bak' \
     "$PRIVATE_REPO/" "$PUBLIC_REPO/"
+
+# Copy the contents of docs/public to docs in the public repo
+mkdir -p "$PUBLIC_REPO/docs"
+rsync -av --delete "$PRIVATE_REPO/docs/public/" "$PUBLIC_REPO/docs/"
 
 # Copy public-specific files
 cp "$PRIVATE_REPO/config/public/README.md" "$PUBLIC_REPO/README.md"
