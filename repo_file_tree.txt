@@ -1,0 +1,30 @@
+.
+├── README.md
+├── config/
+│   └── public/
+├── docs/
+│   ├── design/
+│   │   └── ui-ux-design-doc.md
+│   ├── planning/
+│   │   ├── project_plan.md
+│   │   ├── requirements_spec.md
+│   │   └── risk-assessment.md
+│   ├── public/
+│   ├── sensitive/
+│   │   ├── api-keys.md
+│   │   ├── deployment-guide.md
+│   │   └── security-considerations.md
+│   ├── technical/
+│   │   ├── architecture_decision_records.md
+│   │   ├── detailed-architecture.md
+│   │   ├── software_design_doc.md
+│   │   └── tech_stack.md
+│   └── testing/
+│       ├── test-cases.md
+│       └── test_plan.md
+├── file_tree.txt
+├── scripts/
+│   ├── dynamic_file_tree_watcher.py
+│   └── sync_to_public.sh
+├── src/
+└── venv/
