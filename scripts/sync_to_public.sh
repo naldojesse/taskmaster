@@ -11,8 +11,9 @@ mkdir -p "$PUBLIC_REPO"
 # Sync files from private to public repo, excluding sensitive information
 rsync -av --delete \
     --exclude='.git/' \
-    --exclude='docs/*' \
+    --exclude='docs/' \
     --include='docs/public/' \
+    --include='docs/public/**' \
     --exclude='*.env' \
     --exclude='node_modules/' \
     --exclude='build/' \
