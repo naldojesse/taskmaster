@@ -16,20 +16,33 @@ class TaskResult:
         self.result = result
         self.metadata = metadata
 
+class AgentFactory:
+    @staticmethod
+    def create_agent(agent_type: str):
+        if agent_type in ["nlp", "summarization", "sentiment_analysis", "named_entity_recognition"]:
+            from src.agents.nlp_agent import NLPAgent
+            return NLPAgent()
+        elif agent_type == "technical":
+            from src.agents.technical_agent import TechnicalAgent
+            return TechnicalAgent()
+        else:
+            raise ValueError(f"Unsupported agent type: {agent_type}")
+
 class CoreEngine:
     def __init__(self):
         self.logger = logging.getLogger('CoreEngine')
         self.agent_registry = {}
 
-    def register_agent(self, agent_type: str, agent):
-        self.agent_registry[agent_type] = agent
+    def register_agent(self, agent_type: str):
+        if agent_type not in self.agent_registry:
+            self.agent_registry[agent_type] = AgentFactory.create_agent(agent_type)
 
     def process_task(self, task: Task) -> TaskResult:
         try:
-            agent = self.agent_registry.get(task.task_type)
-            if not agent:
-                raise ValueError(f"No agent registered for task type: {task.task_type}")
-            
+            if task.task_type not in self.agent_registry:
+                self.register_agent(task.task_type)
+
+            agent = self.agent_registry[task.task_type]
             result = agent.process_task(task)
             return TaskResult(task.task_id, result, {"task_type": task.task_type})
         except Exception as e:

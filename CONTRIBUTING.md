@@ -5,7 +5,6 @@ Thank you for considering contributing to TaskMaster AI! We welcome contribution
 ## Table of Contents
 - [Contributing to TaskMaster AI](#contributing-to-taskmaster-ai)
   - [Table of Contents](#table-of-contents)
-  - [Code of Conduct](#code-of-conduct)
   - [How to Contribute](#how-to-contribute)
     - [Reporting Bugs](#reporting-bugs)
     - [Suggesting Features](#suggesting-features)
@@ -14,10 +13,6 @@ Thank you for considering contributing to TaskMaster AI! We welcome contribution
   - [Style Guide](#style-guide)
   - [Testing](#testing)
   - [License](#license)
-
-## Code of Conduct
-
-Please read and follow our [Code of Conduct](https://github.com/yourusername/taskmaster-ai/blob/main/CODE_OF_CONDUCT.md) to ensure a welcoming and inclusive community.
 
 ## How to Contribute
 
