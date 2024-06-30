@@ -1,5 +1,7 @@
 # taskmaster_ai/src/interfaces/ai_model_interface.py
 
+from typing import Dict
+
 class MockAIModel:
     def generate_text(self, prompt: str) -> str:
         return f"Generated text based on: {prompt[:30]}..."

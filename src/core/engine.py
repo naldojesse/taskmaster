@@ -2,6 +2,7 @@
 
 import logging
 from typing import Dict, Any
+from src.memory.memory_manager import MemoryManager
 
 class Task:
     def __init__(self, task_id: str, task_type: str, input_data: Dict[str, Any], parameters: Dict[str, Any]):
@@ -32,6 +33,7 @@ class CoreEngine:
     def __init__(self):
         self.logger = logging.getLogger('CoreEngine')
         self.agent_registry = {}
+        self.memory_manager = MemoryManager()
 
     def register_agent(self, agent_type: str):
         if agent_type not in self.agent_registry:
@@ -43,7 +45,18 @@ class CoreEngine:
                 self.register_agent(task.task_type)
 
             agent = self.agent_registry[task.task_type]
+            
+            # Retrieve context from memory
+            context = self.memory_manager.get_data(task.task_id) or {}
+            
+            # Add context to task parameters
+            task.parameters['context'] = context
+            
             result = agent.process_task(task)
+            
+            # Store result in memory
+            self.memory_manager.store_data(task.task_id, result)
+            
             return TaskResult(task.task_id, result, {"task_type": task.task_type})
         except Exception as e:
             self.logger.error(f"Error processing task {task.task_id}: {str(e)}")

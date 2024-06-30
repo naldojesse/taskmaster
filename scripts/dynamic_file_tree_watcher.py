@@ -22,6 +22,7 @@ import os
 import argparse
 import logging
 import pathspec
+import time  # Add this import
 
 def setup_logging(log_file=None):
     """
