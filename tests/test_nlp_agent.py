@@ -6,8 +6,8 @@ import logging
 # Configure logging to print to stdout for the test
 logging.basicConfig(level=logging.DEBUG)
 
-from src.agents.nlp_agent import NLPAgent
-from src.core.engine import Task
+from taskmaster.agents.nlp_agent import NLPAgent
+from taskmaster.core.engine import Task
 
 @pytest.fixture
 def nlp_agent():

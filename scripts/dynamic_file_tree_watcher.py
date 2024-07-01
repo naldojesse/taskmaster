@@ -7,7 +7,7 @@ This script monitors a specified directory and updates a file with the directory
 It uses the `watchdog` library to watch for file system events and logs activities.
 
 Usage:
-    python dynamic_file_tree_watcher.py -d <directory> -o <output_file> -s -f -l <log_file> -u
+    python dynamic_file_tree_watcher.py -d <directory> -o <output_file> -s -f -l <log_file> -u -i <update_interval> --cache-file <cache_file>
 
 Arguments:
     -d, --directory       Specify directory to monitor (default is current directory).
@@ -16,13 +16,19 @@ Arguments:
     -f, --follow-symlinks Follow symbolic links.
     -l, --log-file        Log file to store logs.
     -u, --update          Enable dynamic updates using watchdog.
+    -i, --update-interval Minimum interval between updates in seconds (default is 5.0).
+    --cache-file          File to store the cache (default is .tree_cache.pkl).
 """
 
 import os
 import argparse
 import logging
 import pathspec
-import time  # Add this import
+import time
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+from collections import deque
+import pickle
 
 def setup_logging(log_file=None):
     """
@@ -117,6 +123,106 @@ def save_tree_to_file(tree, output_file):
     except IOError as e:
         logging.error(f"Error writing to file {output_file}: {e}")
 
+class FileTreeHandler(FileSystemEventHandler):
+    def __init__(self, directory, output_file, show_hidden, follow_symlinks, gitignore_spec, update_interval, cache_file):
+        self.directory = directory
+        self.output_file = output_file
+        self.show_hidden = show_hidden
+        self.follow_symlinks = follow_symlinks
+        self.gitignore_spec = gitignore_spec
+        self.update_interval = update_interval
+        self.last_update = 0
+        self.event_queue = deque()
+        self.cache_file = cache_file
+        self.tree_cache = self.load_cache()
+        self.update_tree(force=True)
+
+    def load_cache(self):
+        if os.path.exists(self.cache_file):
+            try:
+                with open(self.cache_file, 'rb') as f:
+                    return pickle.load(f)
+            except (pickle.UnpicklingError, EOFError):
+                logging.warning("Failed to load cache. Starting with an empty cache.")
+        return {}
+
+    def save_cache(self):
+        with open(self.cache_file, 'wb') as f:
+            pickle.dump(self.tree_cache, f)
+
+    def update_tree(self, force=False):
+        current_time = time.time()
+        if force or current_time - self.last_update >= self.update_interval:
+            directory_tree = self.generate_tree_with_cache(self.directory)
+            save_tree_to_file(directory_tree, self.output_file)
+            logging.info(f"File tree updated and saved to {self.output_file}")
+            self.last_update = current_time
+            self.event_queue.clear()
+            self.save_cache()
+
+    def generate_tree_with_cache(self, directory):
+        tree = [directory]
+        self._build_tree_with_cache(directory, "", tree)
+        return tree
+
+    def _build_tree_with_cache(self, current_path, current_indent, tree):
+        try:
+            entries = sorted(os.listdir(current_path))
+        except PermissionError:
+            tree.append(f"{current_indent}[Permission Denied: {current_path}]")
+            logging.error(f"Permission denied for directory: {current_path}")
+            return
+        
+        entries = [e for e in entries if self.show_hidden or not e.startswith('.')]
+        if self.gitignore_spec:
+            entries = [e for e in entries if not self.gitignore_spec.match_file(os.path.join(current_path, e))]
+        
+        for count, entry in enumerate(entries):
+            entry_path = os.path.join(current_path, entry)
+            if count == len(entries) - 1:
+                connector = "└──"
+                new_indent = current_indent + "    "
+            else:
+                connector = "├──"
+                new_indent = current_indent + "│   "
+
+            if os.path.isdir(entry_path):
+                tree.append(f"{current_indent}{connector} {entry}/")
+                if self.follow_symlinks or not os.path.islink(entry_path):
+                    if entry_path in self.tree_cache:
+                        tree.extend(self.tree_cache[entry_path])
+                    else:
+                        subtree = []
+                        self._build_tree_with_cache(entry_path, new_indent, subtree)
+                        self.tree_cache[entry_path] = subtree
+                        tree.extend(subtree)
+            else:
+                tree.append(f"{current_indent}{connector} {entry}")
+
+    def on_any_event(self, event):
+        self.event_queue.append(event)
+        self.process_event_queue()
+
+    def process_event_queue(self):
+        current_time = time.time()
+        if current_time - self.last_update >= self.update_interval and self.event_queue:
+            affected_paths = set()
+            while self.event_queue:
+                event = self.event_queue.popleft()
+                affected_paths.add(os.path.dirname(event.src_path))
+                if hasattr(event, 'dest_path'):
+                    affected_paths.add(os.path.dirname(event.dest_path))
+
+            for path in affected_paths:
+                self.invalidate_cache(path)
+
+            self.update_tree(force=True)
+
+    def invalidate_cache(self, path):
+        for cached_path in list(self.tree_cache.keys()):
+            if cached_path.startswith(path):
+                del self.tree_cache[cached_path]
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Print directory tree to a file.')
     parser.add_argument('-d', '--directory', type=str, default='.', help='Specify directory to monitor (default is current directory).')
@@ -125,6 +231,8 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--follow-symlinks', action='store_true', help='Follow symbolic links.')
     parser.add_argument('-l', '--log-file', type=str, help='Log file to store logs.')
     parser.add_argument('-u', '--update', action='store_true', help='Enable dynamic updates using watchdog.')
+    parser.add_argument('-i', '--update-interval', type=float, default=5.0, help='Minimum interval between updates in seconds (default is 5.0).')
+    parser.add_argument('--cache-file', type=str, default='.tree_cache.pkl', help='File to store the cache (default is .tree_cache.pkl).')
 
     args = parser.parse_args()
     
@@ -133,89 +241,9 @@ if __name__ == "__main__":
     gitignore_spec = load_gitignore(args.directory)
 
     if args.update:
-        from watchdog.observers import Observer
-        from watchdog.events import FileSystemEventHandler
-
-        class FileTreeHandler(FileSystemEventHandler):
-            """
-            Event handler for file system events to update the directory tree.
-
-            Attributes:
-                directory (str): The directory to monitor.
-                output_file (str): The file to save the directory tree to.
-                show_hidden (bool): Whether to include hidden files.
-                follow_symlinks (bool): Whether to follow symbolic links.
-                gitignore_spec (pathspec.PathSpec): PathSpec object for matching ignored paths.
-            """
-            def __init__(self, directory, output_file, show_hidden, follow_symlinks, gitignore_spec):
-                self.directory = directory
-                self.output_file = output_file
-                self.show_hidden = show_hidden
-                self.follow_symlinks = follow_symlinks
-                self.gitignore_spec = gitignore_spec
-                self.update_tree()
-
-            def update_tree(self):
-                """
-                Update the directory tree and save it to the output file.
-                """
-                directory_tree = print_directory_tree(self.directory, self.show_hidden, self.follow_symlinks, self.gitignore_spec)
-                save_tree_to_file(directory_tree, self.output_file)
-                logging.info(f"File tree updated and saved to {self.output_file}")
-
-            def on_any_event(self, event):
-                """
-                Handle any file system event.
-
-                Args:
-                    event (FileSystemEvent): The file system event.
-                """
-                if event.is_directory:
-                    return
-                self.update_tree()
-
-            def on_created(self, event):
-                """
-                Handle file creation event.
-
-                Args:
-                    event (FileSystemEvent): The file system event.
-                """
-                logging.info(f"File created: {event.src_path}")
-                self.update_tree()
-
-            def on_deleted(self, event):
-                """
-                Handle file deletion event.
-
-                Args:
-                    event (FileSystemEvent): The file system event.
-                """
-                logging.info(f"File deleted: {event.src_path}")
-                self.update_tree()
-
-            def on_modified(self, event):
-                """
-                Handle file modification event.
-
-                Args:
-                    event (FileSystemEvent): The file system event.
-                """
-                logging.info(f"File modified: {event.src_path}")
-                self.update_tree()
-
-            def on_moved(self, event):
-                """
-                Handle file move event.
-
-                Args:
-                    event (FileSystemEvent): The file system event.
-                """
-                logging.info(f"File moved: from {event.src_path} to {event.dest_path}")
-                self.update_tree()
-
         event_handler = FileTreeHandler(args.directory, args.output, args.show_hidden,
-                                        args.follow_symlinks, gitignore_spec)
+                                        args.follow_symlinks, gitignore_spec, args.update_interval,
+                                        args.cache_file)
         observer = Observer()
         observer.schedule(event_handler, path=args.directory, recursive=True)
         
@@ -228,6 +256,10 @@ if __name__ == "__main__":
             observer.stop()
         observer.join()
     else:
-        directory_tree = print_directory_tree(args.directory, args.show_hidden, args.follow_symlinks, gitignore_spec)
+        handler = FileTreeHandler(args.directory, args.output, args.show_hidden,
+                                  args.follow_symlinks, gitignore_spec, args.update_interval,
+                                  args.cache_file)
+        directory_tree = handler.generate_tree_with_cache(args.directory)
         save_tree_to_file(directory_tree, args.output)
-        logging.info(f"File tree generated and saved to {args.output}")
+        handler.save_cache()
+        logging.info(f"File tree saved to {args.output}")

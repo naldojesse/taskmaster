@@ -1,7 +1,7 @@
 # taskmaster_ai/tests/test_memory_manager.py
 
 import pytest
-from src.memory.memory_manager import MemoryManager
+from taskmaster.memory.memory_manager import MemoryManager
 
 @pytest.fixture
 def memory_manager():

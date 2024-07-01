@@ -1,7 +1,7 @@
 # taskmaster_ai/tests/test_core_engine.py
 
 import pytest
-from src.core.engine import CoreEngine, Task, TaskResult
+from taskmaster.core.engine import CoreEngine, Task, TaskResult
 
 def test_core_engine_task_processing():
     engine = CoreEngine()

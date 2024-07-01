@@ -74,3 +74,4 @@ class MemoryManager:
         except Exception as e:
             self.logger.error(f"Error clearing all data: {str(e)}")
             return False
+

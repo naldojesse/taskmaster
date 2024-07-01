@@ -166,3 +166,6 @@ postman/
 
 # Ignore repo_file_tree.txt
 repo_file_tree.txt
+
+# Tree Cache
+.tree_cache.pkl

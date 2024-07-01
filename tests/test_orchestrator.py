@@ -1,9 +1,9 @@
 # taskmaster_ai/tests/test_orchestrator.py
 
 import pytest
-from src.core.engine import CoreEngine, Task
-from src.orchestrator.orchestrator import Orchestrator
-from src.models import TaskResult  # Changed import
+from taskmaster.core.engine import CoreEngine, Task
+from taskmaster.orchestrator.orchestrator import Orchestrator
+from taskmaster.models import TaskResult  # Changed import
 
 @pytest.fixture
 def core_engine():

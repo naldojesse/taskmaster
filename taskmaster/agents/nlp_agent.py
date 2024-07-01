@@ -2,7 +2,7 @@
 
 import logging
 from typing import Dict, Any, Tuple, List
-from src.core.engine import Task, TaskResult
+from taskmaster.core.engine import Task, TaskResult
 
 class NLPAgent:
     def __init__(self):

@@ -1,4 +1,4 @@
-# taskmaster_ai/src/interfaces/ai_model_interface.py
+# taskmaster/interfaces/ai_model_interface.py
 
 from typing import Dict
 

@@ -2,7 +2,7 @@
 
 import logging
 from typing import Dict, Any
-from src.core.engine import Task, TaskResult
+from taskmaster.core.engine import Task, TaskResult
 
 class TechnicalAgent:
     def __init__(self):

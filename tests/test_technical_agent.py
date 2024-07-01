@@ -1,8 +1,8 @@
 # taskmaster_ai/tests/test_technical_agent.py
 
 import pytest
-from src.agents.technical_agent import TechnicalAgent
-from src.core.engine import Task
+from taskmaster.agents.technical_agent import TechnicalAgent
+from taskmaster.core.engine import Task
 
 @pytest.fixture
 def technical_agent():

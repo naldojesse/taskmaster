@@ -1,18 +1,19 @@
-# taskmaster_ai/src/core/engine.py
+# taskmaster/core/engine.py
 
 import logging
 from typing import Dict, Any, List
-from src.models import Task, TaskResult
-from src.memory.memory_manager import MemoryManager
+from taskmaster.models import Task, TaskResult
+from taskmaster.memory.memory_manager import MemoryManager
+from taskmaster.orchestrator.orchestrator import Orchestrator
 
 class AgentFactory:
     @staticmethod
     def create_agent(agent_type: str):
         if agent_type in ["nlp", "summarization", "sentiment_analysis", "named_entity_recognition"]:
-            from src.agents.nlp_agent import NLPAgent
+            from taskmaster.agents.nlp_agent import NLPAgent
             return NLPAgent()
         elif agent_type == "technical":
-            from src.agents.technical_agent import TechnicalAgent
+            from taskmaster.agents.technical_agent import TechnicalAgent
             return TechnicalAgent()
         else:
             raise ValueError(f"Unsupported agent type: {agent_type}")
@@ -22,6 +23,7 @@ class CoreEngine:
         self.logger = logging.getLogger('CoreEngine')
         self.agent_registry = {}
         self.memory_manager = MemoryManager()
+        self.orchestrator = Orchestrator(self)
 
     def register_agent(self, agent_type: str):
         if agent_type not in self.agent_registry:
