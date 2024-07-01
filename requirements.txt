@@ -1,4 +1,5 @@
 iniconfig==2.0.0
+networkx==3.3
 packaging==24.1
 pathspec==0.12.1
 pluggy==1.5.0

@@ -1,21 +1,9 @@
 # taskmaster_ai/src/core/engine.py
 
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List
+from src.models import Task, TaskResult
 from src.memory.memory_manager import MemoryManager
-
-class Task:
-    def __init__(self, task_id: str, task_type: str, input_data: Dict[str, Any], parameters: Dict[str, Any]):
-        self.task_id = task_id
-        self.task_type = task_type
-        self.input_data = input_data
-        self.parameters = parameters
-
-class TaskResult:
-    def __init__(self, task_id: str, result: Any, metadata: Dict[str, Any]):
-        self.task_id = task_id
-        self.result = result
-        self.metadata = metadata
 
 class AgentFactory:
     @staticmethod

@@ -163,3 +163,6 @@ postman/
 
 # Aider AI
 .aider/
+
+# Ignore repo_file_tree.txt
+repo_file_tree.txt

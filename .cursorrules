@@ -1,0 +1,129 @@
+{
+  "general": {
+    "coding_style": {
+      "language": "Python",
+      "use_strict": true,
+      "indentation": "4 spaces",
+      "max_line_length": 120,
+      "comments": {
+        "style": "Google-style docstrings",
+        "require_comments": true
+      }
+    },
+    "naming_conventions": {
+      "variables": "snake_case",
+      "functions": "snake_case",
+      "classes": "PascalCase",
+      "interfaces": "PascalCase",
+      "files": "snake_case.py"
+    },
+    "error_handling": {
+      "prefer_try_catch": true,
+      "log_errors": true
+    },
+    "testing": {
+      "require_tests": true,
+      "test_coverage": "80%",
+      "test_types": ["unit", "integration", "e2e"]
+    },
+    "documentation": {
+      "require_docs": true,
+      "doc_tool": "Sphinx",
+      "style_guide": "Google-style docstrings"
+    },
+    "security": {
+      "require_https": false,
+      "sanitize_inputs": true,
+      "validate_inputs": true,
+      "use_env_vars": true
+    },
+    "configuration_management": {
+      "config_files": ["config.py"],
+      "env_management": "python-dotenv",
+      "secrets_management": "environment variables"
+    },
+    "code_review": {
+      "require_reviews": true,
+      "review_tool": "GitHub Pull Requests",
+      "review_criteria": ["code quality", "test coverage", "documentation"]
+    },
+    "version_control": {
+      "system": "Git",
+      "branching_strategy": "Git Flow",
+      "commit_message_format": "Conventional Commits"
+    },
+    "logging": {
+      "logging_tool": "Python logging module",
+      "log_levels": ["debug", "info", "warn", "error"],
+      "log_retention_policy": "30 days"
+    },
+    "monitoring": {
+      "monitoring_tool": "Prometheus",
+      "metrics": ["response_time", "throughput", "error_rate"]
+    },
+    "dependency_management": {
+      "package_manager": "pip",
+      "versioning_strategy": "Semantic Versioning"
+    },
+    "accessibility": {
+      "standards": ["WCAG 2.1"],
+      "testing_tools": []
+    },
+    "internationalization": {
+      "i18n_tool": "gettext",
+      "supported_languages": ["en"],
+      "default_language": "en"
+    },
+    "ci_cd": {
+      "ci_tool": "GitHub Actions",
+      "cd_tool": "Docker",
+      "pipeline_configuration": ".github/workflows/ci.yml"
+    },
+    "code_formatting": {
+      "formatter": "Black",
+      "linting_tool": "Pylint",
+      "rules": ["PEP 8"]
+    },
+    "architecture": {
+      "patterns": ["Modular Design", "Separation of Concerns"],
+      "principles": ["SOLID", "DRY"]
+    }
+  },
+  "project_specific": {
+    "use_framework": "Flask",
+    "styling": "N/A",
+    "testing_framework": "pytest",
+    "build_tool": "N/A",
+    "deployment": {
+      "environment": "Local",
+      "automation": "N/A",
+      "strategy": "N/A"
+    },
+    "performance": {
+      "benchmarking_tool": "N/A",
+      "performance_goals": {
+        "response_time": "2 seconds",
+        "throughput": "50 tasks/minute",
+        "error_rate": "< 5%"
+      }
+    }
+  },
+  "context": {
+    "codebase_overview": "TaskMaster AI is a modular AI agent framework designed to automate tasks and streamline workflows. It integrates various AI functionalities with human-AI collaboration to enhance productivity.",
+    "libraries": ["Flask", "Groq API", "OpenRouter AI API", "Hugging Face Transformers", "spaCy", "networkx"],
+    "coding_practices": {
+      "modularity": true,
+      "DRY_principle": true,
+      "performance_optimization": false
+    }
+  },
+  "behavior": {
+    "verbosity": {
+      "level": 2,
+      "range": [0, 3]
+    },
+    "handle_incomplete_tasks": "Provide a clear error message and log the issue",
+    "ask_for_clarification": true,
+    "communication_tone": "Professional and concise"
+  }
+}
