@@ -169,3 +169,22 @@ repo_file_tree.txt
 
 # Tree Cache
 .tree_cache.pkl
+
+# Dendron VSCode extension
+.dendron/
+dendron.*
+dendron-debug.log*
+dendron-error.log*
+dendron-backups/
+dendron-logs/
+dendron-cache/
+dendron-templates/
+dendron-vaults/
+dendron-workspace/
+dendron-notes/
+dendron-exports/
+dendron-imports/
+dendron-attachments/
+dendron-config.json
+dendron-settings.json
+

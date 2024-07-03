@@ -125,5 +125,52 @@
     "handle_incomplete_tasks": "Provide a clear error message and log the issue",
     "ask_for_clarification": true,
     "communication_tone": "Professional and concise"
+  },
+  {
+  {
+  "tools": {
+    "markdown-checkbox": {
+      "description": "Manage tasks with interactive checkboxes in Markdown files."
+    },
+    "mermaid": {
+      "description": "Create diagrams and visualize workflows in Markdown."
+    },
+    "dendron": {
+      "description": "Hierarchical note-taking and knowledge management."
+    },
+    "better-comments": {
+      "description": "Enhance code readability with color-coded comments."
+    },
+    "todo-tree": {
+      "description": "Visualize and manage tasks directly in your code."
+    }
+  },
+  "rules": {
+    "taskManagement": {
+      "description": "Use Markdown Checkbox and ToDo Tree for task management.",
+      "context": "Refer to Markdown Checkbox lists and visualize tasks using ToDo Tree. Provide task prioritization and completion suggestions.",
+      "examples": [
+        "Highlight high-priority tasks in Markdown Checkbox and ToDo Tree.",
+        "Break down large tasks into smaller subtasks."
+      ]
+    },
+    "documentation": {
+      "description": "Use Dendron for notes and Mermaid for diagrams.",
+      "context": "Organize notes with Dendron and create visual diagrams with Mermaid. Provide tips for effective documentation structure.",
+      "examples": [
+        "Create a new note in Dendron for meeting summaries.",
+        "Use Mermaid to visualize complex workflows."
+      ]
+    },
+    "comments": {
+      "description": "Use Better Comments to improve code readability.",
+      "context": "Categorize and highlight important notes with Better Comments. Provide suggestions for clear and organized comments.",
+      "examples": [
+        "Use specific tags in Better Comments for TODOs and FIXMEs.",
+        "Organize comments by functionality for better readability."
+      ]
+    }
   }
+}
+}
 }
